@@ -17,6 +17,10 @@ set(SOURCES
     src/lexer.cpp
     src/ast.cpp
     src/parser.cpp
+    src/catalog.cpp
+    src/plan.cpp
+    src/executor.cpp
+    src/optimizer.cpp
 )
 
 add_library(db_storage ${SOURCES})
@@ -32,3 +36,6 @@ target_link_libraries(test_b_plus_tree PRIVATE db_storage Threads::Threads)
 
 add_executable(test_parser tests/test_parser.cpp)
 target_link_libraries(test_parser PRIVATE db_storage Threads::Threads)
+
+add_executable(test_executor tests/test_executor.cpp)
+target_link_libraries(test_executor PRIVATE db_storage Threads::Threads)
