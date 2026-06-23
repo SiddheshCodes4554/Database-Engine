@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(DatabaseEngine CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -14,6 +14,9 @@ set(SOURCES
     src/buffer_pool_manager.cpp
     src/b_plus_tree_internal_page.cpp
     src/b_plus_tree_leaf_page.cpp
+    src/lexer.cpp
+    src/ast.cpp
+    src/parser.cpp
 )
 
 add_library(db_storage ${SOURCES})
@@ -26,3 +29,6 @@ target_link_libraries(test_storage_engine PRIVATE db_storage Threads::Threads)
 
 add_executable(test_b_plus_tree tests/test_b_plus_tree.cpp)
 target_link_libraries(test_b_plus_tree PRIVATE db_storage Threads::Threads)
+
+add_executable(test_parser tests/test_parser.cpp)
+target_link_libraries(test_parser PRIVATE db_storage Threads::Threads)

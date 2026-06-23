@@ -354,7 +354,6 @@ private:
             return;
         }
         Page *curr_page = bpm_->FetchPage(root_page_id_);
-        curr_page->RLatch();
         root_latch_.unlock();
 
         while (true) {
@@ -365,8 +364,6 @@ private:
             auto *internal = reinterpret_cast<BPlusTreeInternalPage *>(tree_page);
             page_id_t child_id = internal->ValueAt(0);
             Page *child_page = bpm_->FetchPage(child_id);
-            child_page->RLatch();
-            curr_page->RUnlatch();
             bpm_->UnpinPage(curr_page->GetPageId(), false);
             curr_page = child_page;
         }
@@ -375,7 +372,6 @@ private:
             auto *leaf = reinterpret_cast<BPlusTreeLeafPage *>(curr_page->GetPayload());
             page_id_t next_leaf_id = leaf->GetNextPageId();
             if (next_leaf_id == deleted_id) {
-                curr_page->RUnlatch();
                 curr_page->WLatch();
                 leaf->SetNextPageId(next_id);
                 curr_page->WUnlatch();
@@ -383,13 +379,11 @@ private:
                 return;
             }
             page_id_t curr_id = curr_page->GetPageId();
-            curr_page->RUnlatch();
             bpm_->UnpinPage(curr_id, false);
             if (next_leaf_id == INVALID_PAGE_ID) {
                 break;
             }
             curr_page = bpm_->FetchPage(next_leaf_id);
-            curr_page->RLatch();
         }
     }
 
