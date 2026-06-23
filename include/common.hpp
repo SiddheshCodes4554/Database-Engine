@@ -20,6 +20,18 @@ constexpr size_t PAGE_SIZE = 4096;
 constexpr page_id_t INVALID_PAGE_ID = -1;
 constexpr frame_id_t INVALID_FRAME_ID = -1;
 
+struct RID {
+    page_id_t page_id{INVALID_PAGE_ID};
+    uint32_t slot_offset{0};
+
+    bool operator==(const RID &other) const {
+        return page_id == other.page_id && slot_offset == other.slot_offset;
+    }
+    bool operator!=(const RID &other) const {
+        return !(*this == other);
+    }
+};
+
 class DiskException : public std::runtime_error {
 public:
     explicit DiskException(const std::string &message) : std::runtime_error("Disk Error: " + message) {}
